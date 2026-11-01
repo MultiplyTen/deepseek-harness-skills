@@ -1,0 +1,28 @@
+# Python / Node caches
+__pycache__/
+*.py[cod]
+node_modules/
+.venv/
+venv/
+
+# Offline experiment state and temporary output
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+superagent-demo-*/
+superagent-test-*/
+tmp/
+temp/
+*.tmp
+*.log
+
+# Local configuration and editor state
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

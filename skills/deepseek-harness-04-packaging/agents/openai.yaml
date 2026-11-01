@@ -1,0 +1,4 @@
+interface:
+  display_name: "DeepSeek 04 · 打包分发"
+  short_description: "制作并检查 Harness 插件组合包，完成从本地制包到测试配置激活的交付流程"
+  default_prompt: "使用 $deepseek-harness-04-packaging，检查我的 Harness 插件并制作完整可安装的本地组合包，逐步解释安装和激活的区别。"

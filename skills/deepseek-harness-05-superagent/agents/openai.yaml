@@ -1,0 +1,4 @@
+interface:
+  display_name: "DeepSeek 05 · Super-agent"
+  short_description: "设计常驻多任务 Agent 的路由、事件、持久化和恢复，区分文章设想与原型能力"
+  default_prompt: "使用 $deepseek-harness-05-superagent，把我的多任务 Agent 需求设计成可验收的系统，核对原型能力，并用离线实验讲清事件路由与恢复。"

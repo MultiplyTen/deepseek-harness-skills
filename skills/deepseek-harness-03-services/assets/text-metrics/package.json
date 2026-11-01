@@ -1,0 +1,8 @@
+{
+  "name": "lesson-text-metrics-service",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test measure.test.mjs"
+  }
+}

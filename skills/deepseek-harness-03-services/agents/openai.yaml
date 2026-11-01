@@ -1,0 +1,4 @@
+interface:
+  display_name: "DeepSeek 03 · 服务与能力组合"
+  short_description: "设计可替换的服务契约、实现和工具入口，验证依赖并组合自己的 Agent 能力。"
+  default_prompt: "使用 $deepseek-harness-03-services，把我的 DeepSeek Harness 能力需求实现为合适的服务、提供方与工具入口，并验证替换边界。"
