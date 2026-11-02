@@ -1,7 +1,13 @@
 ---
 name: deepseek-harness-05-superagent
-description: 基于 DeepSeek Super-agent 设计思路，为长期运行、多任务、多信道的 Agent 系统设计协调层、事件路由、持久化与恢复机制，或扩展 dsh-superagent-prototype。适用于系统编排和相关教学；普通单工具插件开发无需使用此技能。
+description: "基于 DeepSeek Super-agent 设计思路，为长期运行、多任务、多信道的 Agent 系统设计协调层、事件路由、持久化与恢复机制，或扩展 dsh-superagent-prototype。适用于系统编排和相关教学；普通单工具插件开发无需使用此技能。 / Design coordination, event routing, persistence, and recovery for long-running, multitask, multichannel agents using DeepSeek Super-agent ideas, or extend dsh-superagent-prototype. Excludes ordinary single-tool plugins."
 ---
+
+[中文](#中文) | [English](#english)
+
+## 中文
+
+按用户使用的语言回答；仅按需读取对应语言的参考资料。中英文内容表达同一套工作流。
 
 # DeepSeek Harness 05：Super-agent 系统设计
 
@@ -42,3 +48,49 @@ description: 基于 DeepSeek Super-agent 设计思路，为长期运行、多任
 - [实验运行说明](references/lab.md)：运行随附的无凭据实验，理解它验证和没有验证的内容。
 
 官方来源与核验日期见原型对照；本 Skill 不复制公众号全文，也不把公开研究原型称作生产成品。
+
+---
+
+## English
+
+Respond in the user's language and read only the relevant language version of a reference. Both sections describe the same workflow.
+
+# DeepSeek Harness 05: Super-agent System Design
+
+Replace manual coordination across sessions with a system that maintains tasks, events, execution, and delivery. Reduce context synchronization and session switching while making results, blockers, and decisions verifiable. This skill is a development workflow; a prompt alone cannot give the current client a persistent service.
+
+## Identify the layer
+
+1. Determine whether the user wants to understand the article, design a system, or modify the public prototype. Read the relevant [design and acceptance guide](references/architecture.en.md); read the [prototype comparison](references/prototype-map.en.md) before changing the prototype.
+2. Create three capability columns: article design, implemented target-code behavior, and proposed additions. The article and public repository differ; not every idea is an existing API.
+3. Check the actual environment, commit, `engines`, lockfiles, and event entrypoints. The prototype and Harness `master` checked on 2026-11-01 have different environment requirements; do not transfer Node or host conclusions across versions.
+
+## Design and implementation
+
+- **Coordination and execution:** the Router owns the global task index, routing, and delivery state. Workers own task context and execution directories. Keep execution detail out of the Router; supply stable task IDs, necessary summaries, and evidence references.
+- **Events:** distinguish Source, Trigger, Thread, Ticket, and Assignment. Screen new work deterministically and apply semantic assessment where needed. Continue existing work through Subscriptions rather than opening a task for every follow-up. Correlation provides evidence of association, not a replacement for subscription routing.
+- **Scope and identity:** a task's Mandate defines granted work. Subscribed context, bot status, quotations, and semantic assessment do not expand it. Accounts on different channels are not automatically the same identity.
+- **Asynchronous interaction:** decouple reception, routing, long-running work, and delivery. Maintain ordered inputs, cancellation, and backpressure per task. One long tool must not block reception for other tasks. Express questions for people as structured fields. Notify on completion or required action; keep ordinary progress in task records.
+- **Durable state and execution instances:** keep business state independent of a Worker/Session. Record state changes and intended side effects transactionally; perform external work after commit. Recover from durable records. Validate assignment IDs or generations on reassignment so an old executor cannot overwrite a new result. Process restart recovery does not establish cross-machine migration.
+- **External Watchdog:** check infrastructure liveness separately from meaningful task progress. Supervision must use more than the supervised Worker's self-assessment. Define evidence, bounded recovery, and escalation for timeout, repeated failure, and stagnation. One missed heartbeat neither proves goal drift nor justifies repeating an external write.
+- **Delivery and retries:** persist destination channels, stable message IDs, status, and receipts in an Outbox. Verify business deduplication, retries, and receiver idempotency separately. Sending successfully before a receipt is persisted can cause duplicates; do not promise unconditional external exactly-once delivery.
+
+## Choose an implementation path
+
+- **Modify the public prototype:** extend Runtime, Engine, Assessor, Executor, Outbox, and Source interfaces using its domain model. Do not bypass the Engine with a separate global task dictionary. Read corresponding source and tests first.
+- **Build a system:** specify event contracts, task states, authorization, persistence, and side-effect ordering, then implement a local loop. Configure real platform connections only when that integration is in scope. Architecture or skill creation alone does not require group messages, PR creation, or background-service deployment.
+- **Teach:** use the [offline demo](assets/superagent-lab/demo.py) and [tests](assets/superagent-lab/test_coordinator.py) to explain deduplication, recovery, and rejection of stale executors. This original Python/SQLite model is not a DeepSeek plugin and supplies no LLM, cross-machine scheduling, or production Watchdog.
+
+## Acceptance and delivery
+
+Verify duplicate events, cross-task input, subscribed follow-ups, input arriving during long work, executor recovery, stale-result isolation, and notification/receipt failures. Cover relevant risks in the actual implementation; do not impose every scenario on read-only teaching.
+
+Deliver architecture and contracts, code or configuration, a source-to-implementation capability comparison, actual verification evidence, and remaining boundaries. Metrics should support decisions: completed/blocked tasks, human action items, recoveries, duplicate deliveries, and end-to-end latency. Frequent progress notifications are not evidence of useful work.
+
+## Resources
+
+- [Design and acceptance](references/architecture.en.md): five design themes, architecture, and acceptance scenarios.
+- [Prototype comparison](references/prototype-map.en.md): public-prototype integration, implementation evidence, and article/prototype differences.
+- [Lab guide](references/lab.en.md): run the credential-free experiment and understand what it does and does not verify.
+
+See the prototype comparison for official sources and verification dates. This skill does not reproduce the full article or describe a research prototype as a production product.

@@ -1,4 +1,4 @@
 interface:
-  display_name: "DeepSeek 01 · 插件配置"
-  short_description: "设计并验证 Harness 插件配置，包含可运行工具示例与分层排错方法"
-  default_prompt: "使用 $deepseek-harness-01-config，为我的 DeepSeek Harness 插件增加可校验的配置字段，并带我验证默认值和覆盖值。"
+  display_name: "DeepSeek 01 · 插件配置 / Configuration"
+  short_description: "插件配置与校验 / Harness configuration and validation"
+  default_prompt: "使用 / Use $deepseek-harness-01-config: 为我的 Harness 插件增加可校验配置并验证默认值与覆盖值。 / Add validated configuration to my Harness plugin and verify defaults and overrides."

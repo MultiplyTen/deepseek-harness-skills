@@ -17,9 +17,9 @@ export const Config: Schema<Config> = Schema.object({
 export function apply(ctx: Context, config: Config) {
   const counter = defineTool({
     name: 'text_count',
-    description: '统计 Unicode 码点数；是否忽略空白由此插件实例的配置决定。',
+    description: '统计 Unicode 码点数；是否忽略空白由此插件实例的配置决定。 / Count Unicode code points; this plugin instance controls whether whitespace is ignored.',
     parameters: {
-      text: { type: 'string', required: true, description: '待统计的文本' },
+      text: { type: 'string', required: true, description: '待统计的文本 / Text to count' },
     },
     output: {
       schema: { type: 'string' },

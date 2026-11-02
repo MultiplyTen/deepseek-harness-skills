@@ -1,7 +1,13 @@
 ---
 name: deepseek-harness-03-services
-description: 在 DeepSeek Harness 中设计、实现或重构可替换的服务能力，连接 Service Definition、Provider 与模型 Tool Consumer，并验证依赖及提供方替换。适用于服务分层和能力组合；简单工具无需独立替换时保留单插件。
+description: "在 DeepSeek Harness 中设计、实现或重构可替换的服务能力，连接 Service Definition、Provider 与模型 Tool Consumer，并验证依赖及提供方替换。适用于服务分层和能力组合；简单工具无需独立替换时保留单插件。 / Design, implement, or refactor replaceable Harness services connecting Definition, Provider, and model Tool Consumer; verify dependencies and replacement. Keep simple tools in one plugin when replacement is unnecessary."
 ---
+
+[中文](#中文) | [English](#english)
+
+## 中文
+
+按用户使用的语言回答；仅按需读取对应语言的参考资料。中英文内容表达同一套工作流。
 
 # DeepSeek Harness：服务与能力组合
 
@@ -43,3 +49,50 @@ description: 在 DeepSeek Harness 中设计、实现或重构可替换的服务�
 - [能力的三种角色设计](https://deepseek-harness.github.io/deepseek-harness/develop/practice/)：分层适用条件、依赖方向、显式解析。
 - [服务与依赖](https://deepseek-harness.github.io/deepseek-harness/develop/framework/service)：`Service`、`inject`、生命周期及隔离。
 - [工具编写参考](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool)：参数与规范结果的执行约定。
+
+---
+
+## English
+
+Respond in the user's language and read only the relevant language version of a reference. Both sections describe the same workflow.
+
+# DeepSeek Harness: Services and Capability Composition
+
+Turn real requirements into reusable, replaceable agent capabilities, explaining the implementation when requested. This Codex skill and a DeepSeek Harness runtime plugin are different deliverables; do not install this skill directory as a `dsh` plugin.
+
+## Establish boundaries
+
+1. Inspect the target repository's package manager, installed version, service definitions, and neighboring implementations. Sources were checked on **2026-11-01**; Harness remains a technical preview. Resolve API differences against the target version, and do not call `master` the latest release.
+2. Determine what needs replacement: local/remote backends, storage, model providers, or simply an added tool. Without independent replacement or reuse needs, use one plugin; three logical roles do not require three npm packages.
+3. Read the [implementation guide](references/guide.en.md) for contracts and composition, or example loading and acceptance. Example files are in [assets/text-metrics](assets/text-metrics).
+
+## Implement the capability
+
+- **Definition** owns the service name, Request/Result types, and behavior contract. Put TypeScript module augmentation here when a `ctx` property is needed. Public contracts must not import a concrete Provider.
+- **Provider** implements the contract and registers the service. Create and clean up resources within its lifecycle; business consumers depend only on the Definition.
+- **Consumer** exposes the service as a model tool or another entrypoint. Declare required services through `inject` and use the framework's parameter definitions and tool pipeline. Do not import a Provider directly.
+- Resolve defaults in an explicit `resolve...()` step so Providers receive a complete request. Preserve input semantics rather than scattering defaults across backends.
+- `defineTool.parameters` is a field map. `execute` returns a canonical value matching `output.schema`; `output.render` produces model-visible content. Do not turn a presentation string into a business protocol that programs must parse again.
+- Use service isolation only when two agents or plugin groups need different instances of a same-named service. Include the relevant Provider and Consumer in each scope, and inspect the target version's group syntax first.
+
+## Verify the actual boundaries
+
+Use the repository's existing checks. For service changes, prioritize:
+
+1. Clear contract semantics for empty values, boundary input, Unicode, and failures.
+2. No runtime import of a concrete Provider by the Consumer; replacing the Provider leaves the Consumer unchanged.
+3. A Consumer waits before `apply` when a required service is absent and reloads when it returns. YAML row order is not a dependency declaration.
+4. Tool parameters, canonical results, and rendering each meet expectations. Check actual tool-call records during agent integration.
+5. If isolation is needed, requests from either group cannot use the other group's instance. Omit isolation configuration when unnecessary.
+
+The included `node --test` checks only the counting contract, not Cordis loading or model calls. When dependencies, build outputs, or model credentials are unavailable, complete feasible local checks and list remaining integration steps; do not claim end-to-end success.
+
+## Delivery
+
+Deliver the runnable service contract, implementation, consumer entrypoint, and composition configuration. Explain the contract, replacement points, checks performed, and limitations. Follow the existing repository's layout and testing conventions. Build a bundle/profile only when distribution is requested; separation alone does not require publishing.
+
+## Official basis
+
+- [Three roles of a capability](https://deepseek-harness.github.io/deepseek-harness/develop/practice/): when layering helps, dependency direction, and explicit resolution.
+- [Services and dependencies](https://deepseek-harness.github.io/deepseek-harness/develop/framework/service): `Service`, `inject`, lifecycle, and isolation.
+- [Adding a tool](https://deepseek-harness.github.io/deepseek-harness/reference/cookbook/adding-a-tool): parameter and canonical-result conventions.

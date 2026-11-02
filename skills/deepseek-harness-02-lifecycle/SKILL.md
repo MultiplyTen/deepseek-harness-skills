@@ -1,7 +1,13 @@
 ---
 name: deepseek-harness-02-lifecycle
-description: 实现或修复 DeepSeek Harness 插件的依赖加载、资源释放、重复注册和热重载问题，也用于带开发者完成生命周期练习。用于已有 Harness/Cordis 插件，不用于普通 JavaScript 定时器问题或插件打包分发。
+description: "实现或修复 DeepSeek Harness 插件的依赖加载、资源释放、重复注册和热重载问题，也用于带开发者完成生命周期练习。用于已有 Harness/Cordis 插件，不用于普通 JavaScript 定时器问题或插件打包分发。 / Implement or fix Harness/Cordis plugin dependency loading, cleanup, duplicate registration, and hot reload; also teach lifecycle behavior. Excludes generic JavaScript timer issues and packaging."
 ---
+
+[中文](#中文) | [English](#english)
+
+## 中文
+
+按用户使用的语言回答；仅按需读取对应语言的参考资料。中英文内容表达同一套工作流。
 
 # DeepSeek Harness 插件生命周期
 
@@ -28,3 +34,35 @@ description: 实现或修复 DeepSeek Harness 插件的依赖加载、资源释�
 ## 依据
 
 官方资料核验于 **2026-11-01**。本 Skill 是学习与开发工作流，不是 DeepSeek 官方发布物。来源、版本核对和运行步骤见 [操作指南](references/guide.md)。
+
+---
+
+## English
+
+Respond in the user's language and read only the relevant language version of a reference. Both sections describe the same workflow.
+
+# DeepSeek Harness Plugin Lifecycle
+
+Make resource ownership, dependencies, and disposal testable. Use the examples for teaching. In a real project, preserve functionality and interfaces while changing the parts responsible for lifecycle problems.
+
+## Workflow
+
+1. Identify the running DSH version, launch method, profile, plugin entrypoint, and effective configuration. Read the target checkout's `package.json`, lockfile, and relevant interfaces. Developer-preview `master` documentation does not guarantee compatibility with every release.
+2. Inventory registrations, timers, connections, background work, and child plugins, with an owner for each. Map duplicate startup, post-disposal output, or missing services to specific resources; consult the [guide](references/guide.en.md) as needed.
+3. Declare actually required services in `inject` before using them. Wait for required dependencies; do not bypass dependency loading with polling or retry loops. Look up optional capabilities where used rather than making them required for stylistic consistency.
+4. Register tools, listeners, and capabilities through the current plugin's `ctx`. Manage native `setInterval`, connections, and other external resources through a disposer returned by `ctx.effect()`. Do not duplicate framework-managed registrations in a global registry.
+5. Put asynchronous cleanup with ordering requirements into one disposer and `await` each step. Stop producing work, then handle in-flight work and close its dependencies. Starting disposers in reverse order does not mean all asynchronous disposers complete sequentially.
+6. Check HMR and watched paths in the effective configuration before testing reloads. Distinguish source reload, configuration reload, and process restart; a successful restart does not prove HMR correctness.
+
+## Examples and verification
+
+- [Timer plugin](assets/lifecycle-plugin/pulse.ts): uses no service and therefore has no `inject`; each load creates a separate instance.
+- [Managed timer](assets/lifecycle-plugin/managed-pulse.mjs): returns an idempotent disposer and prevents already queued callbacks from an old instance from producing output.
+- [Resource tests](assets/lifecycle-plugin/managed-pulse.test.mjs): run `node --test <path-to-this-file>` without third-party dependencies. They test resource behavior, not Cordis loading.
+- [Type declaration](assets/lifecycle-plugin/managed-pulse.d.mts): lets the TypeScript plugin import its JavaScript helper.
+
+For implementation, deliver changes, triggers, verification results, and uncovered integration behavior. For teaching, observe one load, disposal, and reload, then explain why the old instance leaves no timer behind. Offline tests do not establish real Harness service-loss recovery or HMR behavior.
+
+## Basis
+
+Official materials were checked on **2026-11-01**. This is an unofficial learning and development workflow. See the [guide](references/guide.en.md) for sources, version checks, and execution steps.

@@ -8,14 +8,14 @@ export const inject = ['tools', 'textMetrics']
 export function apply(context: Context) {
   const textCount = defineTool({
     name: 'text_count',
-    description: '按 Unicode 码点统计文本长度，可选择排除空白。',
+    description: '按 Unicode 码点统计文本长度，可选择排除空白。 / Count Unicode code points, optionally excluding whitespace.',
     parameters: {
-      text: { type: 'string', required: true, description: '待统计的文本' },
-      ignoreWhitespace: { type: 'boolean', description: '为 true 时排除空白，默认 false' },
+      text: { type: 'string', required: true, description: '待统计的文本 / Text to count' },
+      ignoreWhitespace: { type: 'boolean', description: '为 true 时排除空白，默认 false / Exclude whitespace when true; default false' },
     },
     output: {
       schema: { type: 'number' },
-      render: (_input, value) => [{ type: 'text', text: `码点数：${value}` }],
+      render: (_input, value) => [{ type: 'text', text: `码点数 / Code points: ${value}` }],
     },
     async execute(input) {
       const request = resolveTextMetricsRequest(input)

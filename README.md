@@ -1,10 +1,12 @@
-# DeepSeek Harness 开发 Skill 套装
+# DeepSeek Harness 开发 Skill 套装 / Development Skills
+
+简体中文 | [English](README.en.md)
 
 五个独立的 Agent Skill，覆盖从插件配置到 Super-agent 系统设计的开发流程。它们为编码助手提供可按需读取的工作方法、参考资料、原创示例和验收步骤，也可以用于边做边学。
 
 本项目为非官方学习与开发资料，不是 DeepSeek 官方发布物。第五个 Skill 依据 2026-10-31 的技术文章和公开研究原型整理，并明确区分文章设计、原型已实现能力与需要自行扩展的部分。
 
-[阅读 Super-agent Skill 介绍手册（PDF）](docs/superagent-skill-guide.pdf) · [下载五合一总包](dist/deepseek-harness-skills-all-v2.zip) · [查看验证范围](docs/validation-summary.md)
+[中文手册（PDF）](docs/superagent-skill-guide.pdf) · [English guide (PDF)](docs/superagent-skill-guide.en.pdf) · [下载五合一总包](dist/deepseek-harness-skills-all-v2.zip) · [查看验证范围](docs/validation-summary.md)
 
 ## 五个 Skill 的使用顺序
 
@@ -29,12 +31,16 @@ skills/
   deepseek-harness-05-superagent/
 docs/
   superagent-skill-guide.pdf
+  superagent-skill-guide.en.pdf
   validation-summary.md
+  validation-summary.en.md
 dist/
   各 Skill 的独立 ZIP、总包和 SHA256SUMS.txt
 ```
 
 每个 Skill 以 `SKILL.md` 为入口，`agents/openai.yaml` 提供界面名称和调用提示，`references/` 存放按需读取的实施资料，`assets/` 是可复制示例；部分 Skill 还提供辅助脚本。
+
+所有 `SKILL.md` 均提供中英文说明；参考指南可切换语言，界面提示和演示输出为双语。
 
 下载或克隆后，保持同名 Skill 目录的内部结构，按目标客户端支持的 Skill 加载方式使用。示例调用：
 

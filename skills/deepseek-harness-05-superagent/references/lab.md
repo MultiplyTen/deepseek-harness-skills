@@ -1,5 +1,7 @@
 # 离线协调实验
 
+简体中文 | [English](lab.en.md)
+
 这是原创的 Python/SQLite 教学模型，用来观察系统不变量。它不是 DeepSeek 原型的移植，也不是能代替 Harness 的 Agent 运行时。
 
 ## 运行

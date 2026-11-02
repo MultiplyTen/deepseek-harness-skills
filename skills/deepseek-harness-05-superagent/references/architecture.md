@@ -1,5 +1,7 @@
 # 从会话工具到常驻协作者
 
+简体中文 | [English](architecture.en.md)
+
 核验日期：2026-11-01。本说明按 [官方技术文章](https://mp.weixin.qq.com/s/zoS7GlReWPhfCjENGxXCdg) 的主题组织，并与 DeepSeek 官方原型的领域、执行和架构资料交叉核对。工程建议和随附实验是本 Skill 的原创教学设计；是否已在公开原型实现，以 [原型对照](prototype-map.md) 的证据为准。
 
 ## 学习目标与双层分工

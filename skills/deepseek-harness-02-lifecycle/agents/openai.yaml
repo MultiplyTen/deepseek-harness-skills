@@ -1,4 +1,4 @@
 interface:
-  display_name: "DeepSeek Harness 02 · 生命周期"
-  short_description: "实现依赖加载、资源清理与重载验证，排查插件卸载后的残留行为"
-  default_prompt: "使用 $deepseek-harness-02-lifecycle 检查我的 Harness 插件，完善资源清理并验证卸载和重新加载行为。"
+  display_name: "DeepSeek 02 · 生命周期 / Lifecycle"
+  short_description: "依赖、清理与重载 / Dependencies, cleanup, and reloads"
+  default_prompt: "使用 / Use $deepseek-harness-02-lifecycle: 检查我的 Harness 插件，完善清理并验证卸载和重新加载。 / Inspect my Harness plugin, improve cleanup, and verify disposal and reloads."

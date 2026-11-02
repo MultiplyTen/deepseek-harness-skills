@@ -1,7 +1,13 @@
 ---
 name: deepseek-harness-04-packaging
-description: 为 DeepSeek Harness 插件制作可安装的 bundle、检查 npm 打包内容、组合 profile，或排查安装成功却未激活的问题。适用于插件交付与相关教学；普通 Codex Skill 打包不使用此流程。
+description: "为 DeepSeek Harness 插件制作可安装的 bundle、检查 npm 打包内容、组合 profile，或排查安装成功却未激活的问题。适用于插件交付与相关教学；普通 Codex Skill 打包不使用此流程。 / Build installable Harness bundles, inspect npm archives, compose profiles, or diagnose installed-but-inactive plugins. Supports delivery and teaching; excludes ordinary Codex Skill packaging."
 ---
+
+[中文](#中文) | [English](#english)
+
+## 中文
+
+按用户使用的语言回答；仅按需读取对应语言的参考资料。中英文内容表达同一套工作流。
 
 # DeepSeek Harness 04：打包与分发
 
@@ -31,3 +37,38 @@ description: 为 DeepSeek Harness 插件制作可安装的 bundle、检查 npm �
 - 对开发者教学，给出安装、验证和移除命令，并让学习者解释 `dsh.bundle` 与 `dsh.profile` 各负责什么。
 
 实际命令与来源见 [打包实践](references/guide.md)。本 Skill 本身是 Agent Skill 目录；`assets/dsh-learning-marker` 才是示例 Harness 插件包，两者安装机制不同。
+
+---
+
+## English
+
+Respond in the user's language and read only the relevant language version of a reference. Both sections describe the same workflow.
+
+# DeepSeek Harness 04: Packaging and Distribution
+
+Deliver implemented Harness plugins as bundles that can be installed, activated, and removed. For learning, explain the workflow with a complete small package. For delivery, build and inspect the local package. Other skills in this series need not be invoked first.
+
+## Target and environment
+
+- Confirm that the input is Harness plugin source and whether the target is a local `.tgz`, installation into an existing profile, or public publication. Perform actions authorized by the task; making a package does not imply npm publication.
+- Inspect the project's `package.json`, lockfile, actual `dsh --version`, and `dsh plugin --help`. Use the built workspace's `pnpm dsh` for source checkouts or `dsh` for standalone installations; avoid mixing versions.
+- Materials were checked against official online documentation on **2026-11-01**. The framework is a technical preview. Follow the target checkout or installed version's CLI and types; do not call `master` stable.
+
+## Implementation
+
+1. Read the [packaging guide](references/guide.en.md): a bundle is distributable; a profile composes the plugins the user launches.
+2. Check entrypoints, runtime outputs, dependencies, `files`, and `dsh.bundle.patch`. Build TypeScript into distributable JavaScript first. Do not distribute `workspace:` dependencies or absolute source paths that resolve only in the author's checkout.
+3. Reference published package names or public subpaths in the patch. Use stable, nonconflicting row IDs. Preserve all necessary configuration when overriding a row because overrides are not deep merges.
+4. The [minimal bundle](assets/dsh-learning-marker/package.json) demonstrates structure without third-party runtime libraries, separating package errors from dependency errors. Real plugins retain their actual dependencies.
+5. Run `python <skill-directory>/scripts/inspect_bundle.py <package-directory>` for a read-only structural check, then use the project's package manager for a pack dry run. Inspect files that actually enter the archive, not just the source tree.
+6. Create a local tarball and run `python <skill-directory>/scripts/inspect_bundle.py <package-directory> --tarball <actual-tgz-path>`. This script does not interpret Cordis YAML semantics, validate semver, or prove host compatibility.
+7. If integration testing is in scope, install that tarball into the agreed test profile, inspect composition using `--dump-config`, then run and check behavior. Remove only resources added for this task; do not reset an existing profile.
+
+## Acceptance and delivery
+
+- Deliver the actual `.tgz` path, package name and version, target host version, and key archive files.
+- Report structural inspection, actual packing, profile activation, business behavior, and removal separately. Mark unexecuted stages as unverified.
+- If installation succeeds without activation, inspect `dsh.bundle` and the profile's bundles list. If the entrypoint is missing, inspect exports, build outputs, and tarball contents before reinstalling the host.
+- For teaching, provide installation, verification, and removal commands, and ask the learner to explain `dsh.bundle` versus `dsh.profile`.
+
+See the [guide](references/guide.en.md) for commands and sources. This directory is an Agent Skill; only `assets/dsh-learning-marker` is an example Harness plugin package. Their installation mechanisms differ.

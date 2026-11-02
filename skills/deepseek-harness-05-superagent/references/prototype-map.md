@@ -1,5 +1,7 @@
 # 官方原型与文章设计的对照
 
+简体中文 | [English](prototype-map.en.md)
+
 核验日期：2026-11-01。已核对 [官方公众号原文《Super-agent 设计探索：迈向更自主的 Agent 系统》](https://mp.weixin.qq.com/s/zoS7GlReWPhfCjENGxXCdg) 与 [DeepSeek 官方原型仓库](https://github.com/deepseek-ai/dsh-superagent-prototype)。文章发布于 2026-10-31，讨论工程架构而非现有产品功能清单。原型核验提交为 [6337fc8](https://github.com/deepseek-ai/dsh-superagent-prototype/tree/6337fc823ce20251c8de8085948165c81aaa701e)。
 
 ## 已核实的定位

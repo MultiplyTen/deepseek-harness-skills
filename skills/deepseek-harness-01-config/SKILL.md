@@ -1,7 +1,13 @@
 ---
 name: deepseek-harness-01-config
-description: 为 DeepSeek Harness 插件设计、实现或修复配置字段、Schemastery 校验和本地配置覆盖层，也用于带练插件配置。用于插件自身配置，不用于模型 API Key 设置或插件分发。
+description: "为 DeepSeek Harness 插件设计、实现或修复配置字段、Schemastery 校验和本地配置覆盖层，也用于带练插件配置。用于插件自身配置，不用于模型 API Key 设置或插件分发。 / Design, implement, or fix DeepSeek Harness plugin configuration, Schemastery validation, and local overlays; also teach plugin configuration. Excludes model API-key setup and distribution."
 ---
+
+[中文](#中文) | [English](#english)
+
+## 中文
+
+按用户使用的语言回答；仅按需读取对应语言的参考资料。中英文内容表达同一套工作流。
 
 # DeepSeek Harness 插件配置
 
@@ -40,3 +46,47 @@ description: 为 DeepSeek Harness 插件设计、实现或修复配置字段、S
 - [scripts/write_overlay.py](scripts/write_overlay.py)：生成绝对路径 overlay；默认拒绝覆盖已有文件，避免改坏现有配置。
 
 交付目标插件改动、配置字段与行为说明、实际验证结果，以及未验证的运行环境或 API 差异。需要发布可安装组合包时转入打包流程；本技能不发布 npm 包。
+
+---
+
+## English
+
+Respond in the user's language and read only the relevant language version of a reference. Both sections describe the same workflow.
+
+# DeepSeek Harness Plugin Configuration
+
+Turn deployment differences in an existing plugin into testable configuration so users can change behavior without editing source. Implement, troubleshoot, or teach as requested; deliver more than a list of concepts.
+
+## Before starting
+
+1. Inspect the target plugin, actual Harness version or checkout, existing overlays, and launch method. Preserve existing fields and configuration rows first.
+2. Harness is a developer-preview framework. Check these examples against the project's current dependencies and interfaces; examples from `master` do not guarantee compatibility with every release.
+3. Without an existing project, use the source prerequisites and examples in the [configuration guide](references/guide.en.md). Distinguish teaching examples from environment setup; prepare dependencies and model connections within the current task's authorization.
+
+## Implementation
+
+- Separate plugin configuration from tool arguments: configuration controls an instance; `parameters` describes data supplied on each model call. Specify each field's name, type, default, and one behavioral example.
+- Export both the `Config` type and runtime schema according to the target API. This skill's baseline uses `@deepseek-ai/schemastery`. The schema supplies defaults and rejects invalid values; `apply(ctx, config)` receives parsed configuration. A plain object is not a Standard Schema.
+- Expose settings that actually need to vary. Do not force tool inputs, service dependencies, or credential contents into ordinary configuration fields; declare service dependencies with `inject`.
+- Use parsed configuration in business logic. Preserve explicit `false`; `value || true` loses it. Tool results must still match `output.schema`, with `output.render` producing model content.
+- Insert the local plugin through a separate overlay using an absolute source path. [write_overlay.py](scripts/write_overlay.py) generates the example overlay. In an existing project, change only the target plugin row. Before replacing its `config`, check whether the entire row configuration must be restated to preserve other keys.
+- Verify defaults, explicit overrides, and invalid input. Counting unit checks do not replace real Harness schema validation or plugin loading; report these layers separately.
+
+## Teaching and acceptance
+
+Use the `ignoreWhitespace` boolean to demonstrate one tool with different instance behavior. Ask the learner to predict omitted, `false`, and `true` results, then explain why the YAML string `"false"` is not a valid boolean.
+
+Cover at least:
+
+- Omitted configuration preserves whitespace; `ignoreWhitespace: true` ignores characters matched by JavaScript `\s`.
+- `你好 Agent` produces `8` and `7`; `你 好\nAgent` produces `9` and `7`, respectively.
+- The runtime schema rejects invalid booleans, or the missing integration check is explicitly recorded.
+- After a configuration change, inspect actual tool calls and results. An answer calculated by the model is not evidence that the tool executed.
+
+## Resources and delivery
+
+- [guide.en.md](references/guide.en.md): read for startup, ineffective configuration, exercises, or official sources.
+- [plugin.ts](assets/example/plugin.ts): configurable tool entrypoint; copy the neighboring counting module and type declaration too.
+- [write_overlay.py](scripts/write_overlay.py): generates an absolute-path overlay and refuses existing-file replacement by default.
+
+Deliver plugin changes, configuration fields and behavior, actual verification results, and unverified environment or API differences. Use the packaging workflow when an installable bundle is requested; this skill does not publish npm packages.
